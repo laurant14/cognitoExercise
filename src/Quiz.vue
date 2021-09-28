@@ -1,27 +1,32 @@
 <template>
   <div>
+    <img src="./assets/images/cognitoFormsLogo.png" />
+    <div class="yaldevi"><h1>QUIZ</h1></div>
     <div id="quiz">
-      <p class="dosis" v-if="!startSeen">
+      <p v-if="!startSeen">
         Count is equal to
         <!--this should be the index of the question in the array-->
         {{ questCount }}
         : Please choose the best answer:
       </p>
       <div
-        class="dosis"
         v-for="(question, index) in questions"
         :key="index"
-        v-show="!fisSameCount"
+        v-show="!isSameCount"
       >
         <!--must change to check if the count is the same-->
         <Question :question="question" />
       </div>
 
-      <button v-if="startSeen" @click="stopSeen">Start Quiz</button>
-      <button @click="count" v-if="!startSeen">Next Question</button>
-      <button v-if="submitSeen">Submit Quiz</button
-      ><!--hide until last question/count=last index of questions array-->
+      <!--hide until last question/count=last index of questions array-->
     </div>
+    <button class="raleway" v-if="startSeen" @click="stopSeen">
+      Start Quiz
+    </button>
+    <button class="raleway" @click="count" v-if="!startSeen">
+      Next Question
+    </button>
+    <button class="raleway" v-if="submitSeen">Submit Quiz</button>
   </div>
 </template>
 
@@ -67,15 +72,16 @@ export default {
 
 <style scoped>
 button {
-  background-color: rgb(22, 167, 211);
+  background-color: rgb(231, 104, 20);
   border-radius: 0px;
-  border-color: rgb(22, 167, 211);
+  border-color: white;
   color: white;
-  font: oblique;
+  font-size: 1.5rem;
 }
 
 #quiz {
-  font-family: "Poiret One", Helvetica, Arial, sans-serif;
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
@@ -83,13 +89,14 @@ button {
   margin: 5rem auto;
   padding: 2rem;
   max-width: 750px;
-  color: rgb(231, 104, 20);
-  background-color: peachpuff;
+  color: rgb(3, 20, 77);
+  background-color: rgb(218, 250, 248);
 }
 
 h1 {
-  font-size: 2rem;
-  padding: 0rem;
+  font-size: 4rem;
+  font-style: italic;
+  text-align: center;
   color: rgb(231, 104, 20);
 }
 .dosis {
@@ -97,5 +104,13 @@ h1 {
 }
 .indieFlower {
   font-family: "Indie Flower", sans-serif;
+}
+.yaldevi {
+  font-family: "Yaldevi", sans-serif;
+  font-weight: 200;
+}
+.raleway {
+  font-family: "Raleway", sans-serif;
+  font-weight: 600;
 }
 </style>
