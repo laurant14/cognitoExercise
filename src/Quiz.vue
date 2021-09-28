@@ -3,26 +3,30 @@
     <img src="./assets/images/cognitoFormsLogo.png" />
     <div class="yaldevi"><h1>QUIZ</h1></div>
     <div id="quiz">
+      <button class="raleway" v-if="startSeen" @click="stopSeen">
+        Start Quiz
+      </button>
       <p v-if="!startSeen">
-        Count is equal to
+        Question
         <!--this should be the index of the question in the array-->
-        {{ questCount }}
+        {{ questCount + 1 }}
         : Please choose the best answer:
       </p>
-      <div
-        v-for="(question, index) in questions"
-        :key="index"
-        v-show="!isSameCount"
-      >
+      <div v-if="!startSeen">
+        <h3>{{ currentQuestion.text }}</h3>
         <!--must change to check if the count is the same-->
         <Question :question="question" />
+        <button
+          v-for="(answers, index) in currentQuestion.answers"
+          v-bind:key="index"
+        >
+          {{ index.answers }}
+        </button>
       </div>
 
       <!--hide until last question/count=last index of questions array-->
     </div>
-    <button class="raleway" v-if="startSeen" @click="stopSeen">
-      Start Quiz
-    </button>
+
     <button class="raleway" @click="count" v-if="!startSeen">
       Next Question
     </button>
@@ -46,6 +50,7 @@ export default {
   },
   data() {
     return {
+      userAnswers: [],
       startSeen: true,
       questCount: 0,
       submitSeen: false,
@@ -59,12 +64,13 @@ export default {
     stopSeen: function () {
       this.startSeen = false;
     },
-    checkCount: function (index) {
-      if (index === this.questCount) {
-        this.isSameCount = true;
-      } else {
-        this.isSameCount = false;
-      }
+    saveAnswers: function (index) {
+      this.userAnswers.push(index);
+    },
+  },
+  computed: {
+    currentQuestion: function () {
+      return this.questions[this.questCount];
     },
   },
 };
@@ -77,6 +83,7 @@ button {
   border-color: white;
   color: white;
   font-size: 1.5rem;
+  font-weight: 400;
 }
 
 #quiz {
@@ -94,8 +101,7 @@ button {
 }
 
 h1 {
-  font-size: 4rem;
-  font-style: italic;
+  font-size: 3rem;
   text-align: center;
   color: rgb(231, 104, 20);
 }
@@ -108,9 +114,5 @@ h1 {
 .yaldevi {
   font-family: "Yaldevi", sans-serif;
   font-weight: 200;
-}
-.raleway {
-  font-family: "Raleway", sans-serif;
-  font-weight: 600;
 }
 </style>
