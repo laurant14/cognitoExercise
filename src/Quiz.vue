@@ -3,7 +3,7 @@
     <img src="./assets/images/cognitoFormsLogo.png" />
     <div class="yaldevi"><h1>QUIZ</h1></div>
     <div id="quiz">
-      <div v-if="startSeen">
+      <div v-if="showStart">
         <h2>Welcome to the Cognito Forms Quiz!</h2>
         <h3>Things to remember:</h3>
         <p>* Once you move on from a question you cannot revisit it</p>
@@ -13,16 +13,20 @@
         </p>
         <p>Click "Start Quiz" to begin.</p>
       </div>
-      <button class="raleway" v-if="startSeen" @click="stopSeen">
+      <div v-if="showSum">
+        <p v-for="(ans, index) in userAnswers" v-bind:key="index">{{ ans }}</p>
+      </div>
+      <button class="raleway" v-if="showStart" @click="stopStartSeen">
         Start Quiz
       </button>
-      <h3 v-if="!startSeen">
-        Question
-        <!--this should be the index of the question in the array-->
-        {{ questCount + 1 }}
-        : Please choose the best answer:
-      </h3>
-      <div v-if="!startSeen">
+      <div v-if="showQuestion">
+        <h3>
+          Question
+          <!--this should be the index of the question in the array-->
+          {{ questCount + 1 }}
+          : Please choose the best answer:
+        </h3>
+
         <h3>{{ currentQuestion.text }}</h3>
         <!--must change to check if the count is the same-->
         <Question :question="question" />
@@ -30,20 +34,23 @@
           class="raleway"
           v-for="(answers, index) in currentQuestion.answers"
           v-bind:key="index"
-          @click="saveAnswers(answers)"
+          @click="saveAnswers(currentQuestion.text, answers)"
         >
           {{ answers }}
         </button>
       </div>
-      <p v-for="(ans, index) in userAnswers" v-bind:key="index">{{ ans }}</p>
+
+      <!-- <p>{{ submitSeen }}</p> -->
 
       <!--hide until last question/count=last index of questions array-->
     </div>
 
-    <button class="buttonStyle" @click="count" v-if="!startSeen">
+    <button class="buttonStyle" @click="count" v-if="showNext">
       Next Question
     </button>
-    <button class="raleway" v-if="submitSeen">Submit Quiz</button>
+    <button @click="showingSummary" class="buttonStyle" v-if="isLastQuestion()">
+      Submit Quiz
+    </button>
   </div>
 </template>
 
@@ -63,22 +70,44 @@ export default {
   },
   data() {
     return {
+      showStart: true,
+      showQuestion: false,
+      showNext: false,
+      showSum: false,
+      //isQuiz: true,
       userAnswers: [],
-      startSeen: true,
+      //startSeen: true,
       questCount: 0,
       submitSeen: false,
-      isSameCount: false,
+      //showSummary: false,
     };
   },
   methods: {
     count: function () {
       this.questCount++;
     },
-    stopSeen: function () {
-      this.startSeen = false;
+    stopStartSeen: function () {
+      this.showStart = false;
+      this.showQuestion = true;
+      this.showNext = true;
     },
-    saveAnswers: function (answers) {
-      this.userAnswers.push(answers);
+    saveAnswers: function (question, answers) {
+      this.userAnswers.push(question, answers);
+    },
+    isLastQuestion: function () {
+      if (this.questCount === this.questions.length - 1) {
+        this.showNext = false;
+        this.submitSeen = true;
+        return true;
+      } else {
+        return false;
+      }
+    },
+    showingSummary: function () {
+      this.showSum = true;
+      this.showQuestion = false;
+      this.showNext = false;
+      this.submitSeen = false;
     },
   },
   computed: {
