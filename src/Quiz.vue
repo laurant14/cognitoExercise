@@ -51,6 +51,9 @@
     <button @click="showingSummary" class="buttonStyle" v-if="isLastQuestion()">
       Submit Quiz
     </button>
+    <button @click="retakeQuiz" class="buttonStyle" v-if="showSum">
+      Retake
+    </button>
   </div>
 </template>
 
@@ -107,6 +110,16 @@ export default {
       this.showSum = true;
       this.showQuestion = false;
       this.showNext = false;
+      this.submitSeen = false;
+      //this.isLastQuestion = false;
+    },
+    retakeQuiz: function () {
+      this.showStart = true;
+      this.showQuestion = false;
+      this.showNext = false;
+      this.showSum = false;
+      this.userAnswers = [];
+      this.questCount = 0;
       this.submitSeen = false;
     },
   },
