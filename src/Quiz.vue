@@ -40,7 +40,7 @@
         </button>
       </div>
 
-      <!-- <p>{{ submitSeen }}</p> -->
+      <!-- <p>{{ showNext }}</p> -->
 
       <!--hide until last question/count=last index of questions array-->
     </div>
@@ -87,20 +87,22 @@ export default {
   },
   methods: {
     count: function () {
+      this.showNext = false;
       this.questCount++;
     },
     stopStartSeen: function () {
       this.showStart = false;
       this.showQuestion = true;
-      this.showNext = true;
+      //this.showNext = true;
     },
     saveAnswers: function (question, answers) {
+      this.showNext = true;
       this.userAnswers.push(question, answers);
     },
     isLastQuestion: function () {
       if (this.questCount === this.questions.length - 1) {
         this.showNext = false;
-        this.submitSeen = true;
+        //this.submitSeen = true;
         return true;
       } else {
         return false;
