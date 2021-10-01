@@ -1,7 +1,7 @@
 <template>
   <div>
     <img src="./assets/images/cognitoFormsLogo.png" />
-    <div class="yaldevi"><h1>QUIZ</h1></div>
+    <div class="sansita"><h1>QUIZ</h1></div>
     <div id="quiz">
       <div v-if="questCount === 0">
         <h2>Welcome to the Cognito Forms Quiz!</h2>
@@ -11,14 +11,20 @@
           * You must answer the current question before moving on to the next
           one
         </p>
-        <p>Click "Start Quiz" to begin.</p>
-        <button class="raleway" @click="questCount++">Start Quiz</button>
+        <p class="p2">Click "Start Quiz" to begin.</p>
+        <md-button class="mdbutton" @click="questCount++">Start Quiz</md-button>
       </div>
 
       <!--show summary div-->
       <div v-if="isQuizDone && end === true">
         <h2>Answer Summary:</h2>
-        <p v-for="ans in userAnswers" v-bind:key="ans">
+        <p
+          text-align="center"
+          v-for="(ans, index) in userAnswers"
+          v-bind:key="index"
+        >
+          Question {{ index }}:
+          {{ specifiedQuestion(index).text }}
           {{ ans }}
         </p>
       </div>
@@ -31,37 +37,43 @@
           : Please choose the best answer:
         </h3>
 
-        <h3>{{ currentQuestion.text }}</h3>
+        <h4>{{ currentQuestion.text }}</h4>
 
         <!--display buttons for answers -->
-        <button
-          class="raleway"
+        <v-btn
+          block
+          class="main1"
           v-for="answers in currentQuestion.answers"
           v-bind:key="answers"
-          @click="saveAnswers(answers)"
+          @click="
+            saveAnswers(currentQuestion.text, answers);
+            select();
+          "
+          v-bind:class="{ highlight: ansSelected(answers) }"
         >
           {{ answers }}
-        </button>
+        </v-btn>
       </div>
     </div>
-    <button
+    <md-button
       :disabled="cannotContinue"
       @click="count()"
       class="buttonStyle"
       v-if="questCount > 0 && questCount < questions.length - 1"
     >
       Next Question
-    </button>
-    <button
+    </md-button>
+    <md-button
+      :disabled="cannotContinue"
       class="buttonStyle"
       v-if="questCount === questions.length - 1 && end != true"
       @click="end = true"
     >
       Submit Quiz
-    </button>
-    <button @click="retakeQuiz" class="buttonStyle" v-if="end === true">
+    </md-button>
+    <md-button @click="retakeQuiz" class="buttonStyle" v-if="end === true">
       Retake
-    </button>
+    </md-button>
   </div>
 </template>
 
@@ -78,14 +90,13 @@ export default {
     userAnswers: {},
     questCount: 0,
     end: false,
+    selected: false,
   }),
   computed: {
     currentQuestion() {
       return this.questions[this.questCount];
     },
     cannotContinue() {
-      console.log("length", Object.keys(this.userAnswers).length);
-      console.log("cannot continue", !this.userAnswers[this.questCount]);
       return !this.userAnswers[this.questCount];
     },
     isQuizDone() {
@@ -94,21 +105,27 @@ export default {
   },
   methods: {
     count: function () {
-      //this.showNext = false;
       this.questCount++;
-      console.log("next clicked");
     },
-    saveAnswers(answers) {
+    specifiedQuestion(index) {
+      return this.questions[index];
+    },
+    saveAnswers(question, answers) {
       this.userAnswers = {
         ...this.userAnswers,
         [this.questCount]: answers,
       };
-      console.log(this.userAnswers);
     },
     retakeQuiz() {
       this.userAnswers = {};
       this.questCount = 0;
       this.end = false;
+    },
+    select() {
+      this.selected = true;
+    },
+    ansSelected(answer) {
+      return this.userAnswers[this.questCount] === answer;
     },
   },
 };
@@ -124,13 +141,49 @@ button {
   font-weight: 400;
 }
 
-.buttonStyle {
-  background-color: rgb(69, 155, 156);
+.mdbutton {
+  background-color: rgb(231, 104, 20);
+  padding: 3mm;
   border-radius: 0px;
   border-color: white;
   color: white;
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-family: "Raleway", sans-serif;
+  font-size: 1rem;
+  font-weight: 1000;
+  margin-top: 10mm;
+  margin-left: 75mm;
+}
+
+.buttonStyle {
+  margin-top: 0mm;
+  margin-left: 57pc;
+  background-color: rgb(69, 155, 156);
+  padding: 3mm;
+  border-radius: 0px;
+  border-color: white;
+  color: white;
+  font-family: "Raleway", sans-serif;
+  font-size: 1rem;
+  font-weight: 1000;
+}
+
+.v-btn {
+  background-color: #fa8100;
+}
+
+.main1 {
+  margin-top: 10px;
+  color: #fa8100;
+  font-weight: bolder;
+}
+
+.highlight {
+  background-color: #ecba84 !important;
+}
+
+.summary {
+  font-size: 2rem;
+  padding: 2mm;
 }
 
 #quiz {
@@ -140,6 +193,7 @@ button {
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   margin-top: 60px;
+  margin-bottom: 0px;
   margin: 5rem auto;
   padding: 2rem;
   max-width: 750px;
@@ -148,23 +202,36 @@ button {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 4rem;
   text-align: center;
+  padding: 5mm;
   color: rgb(231, 104, 20);
 }
 h2 {
+  white-space: nowrap;
+  margin-bottom: 30px;
+  padding: 1mm;
   font-size: 2rem;
   text-align: center;
   color: rgb(3, 20, 77);
 }
-.dosis {
-  font-family: "Dosis", sans-serif;
+h3 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
 }
-.indieFlower {
-  font-family: "Indie Flower", sans-serif;
+h4 {
+  margin-bottom: 30px;
+  font-size: 1.1rem;
 }
-.yaldevi {
-  font-family: "Yaldevi", sans-serif;
-  font-weight: 200;
+p {
+  font-size: 1pc;
+  padding: 2mm;
+}
+.p2 {
+  font-size: 1pc;
+  padding: 3mm;
+}
+.sansita {
+  font-family: "Sansita", sans-serif;
 }
 </style>
