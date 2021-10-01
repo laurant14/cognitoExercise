@@ -3,7 +3,7 @@
     <img src="./assets/images/cognitoFormsLogo.png" />
     <div class="yaldevi"><h1>QUIZ</h1></div>
     <div id="quiz">
-      <div v-if="showStart">
+      <div v-if="questCount === 0">
         <h2>Welcome to the Cognito Forms Quiz!</h2>
         <h3>Things to remember:</h3>
         <p>* Once you move on from a question you cannot revisit it</p>
@@ -12,122 +12,103 @@
           one
         </p>
         <p>Click "Start Quiz" to begin.</p>
+        <button class="raleway" @click="questCount++">Start Quiz</button>
       </div>
-      <div v-if="showSum">
-        <p v-for="(ans, index) in userAnswers" v-bind:key="index">{{ ans }}</p>
+
+      <!--show summary div-->
+      <div v-if="isQuizDone && end === true">
+        <h2>Answer Summary:</h2>
+        <p v-for="ans in userAnswers" v-bind:key="ans">
+          {{ ans }}
+        </p>
       </div>
-      <button class="raleway" v-if="showStart" @click="stopStartSeen">
-        Start Quiz
-      </button>
-      <div v-if="showQuestion">
+
+      <!-- Question prompt and actual question-->
+      <div v-if="questCount > 0 && end != true">
         <h3>
           Question
-          <!--this should be the index of the question in the array-->
-          {{ questCount + 1 }}
+          {{ questCount }}
           : Please choose the best answer:
         </h3>
 
         <h3>{{ currentQuestion.text }}</h3>
-        <!--must change to check if the count is the same-->
-        <Question :question="question" />
+
+        <!--display buttons for answers -->
         <button
           class="raleway"
-          v-for="(answers, index) in currentQuestion.answers"
-          v-bind:key="index"
-          @click="saveAnswers(currentQuestion.text, answers)"
+          v-for="answers in currentQuestion.answers"
+          v-bind:key="answers"
+          @click="saveAnswers(answers)"
         >
           {{ answers }}
         </button>
       </div>
-
-      <!-- <p>{{ showNext }}</p> -->
-
-      <!--hide until last question/count=last index of questions array-->
     </div>
-
-    <button class="buttonStyle" @click="count" v-if="showNext">
+    <button
+      :disabled="cannotContinue"
+      @click="count()"
+      class="buttonStyle"
+      v-if="questCount > 0 && questCount < questions.length - 1"
+    >
       Next Question
     </button>
-    <button @click="showingSummary" class="buttonStyle" v-if="isLastQuestion()">
+    <button
+      class="buttonStyle"
+      v-if="questCount === questions.length - 1 && end != true"
+      @click="end = true"
+    >
       Submit Quiz
     </button>
-    <button @click="retakeQuiz" class="buttonStyle" v-if="showSum">
+    <button @click="retakeQuiz" class="buttonStyle" v-if="end === true">
       Retake
     </button>
   </div>
 </template>
 
 <script>
-import Question from "./components/Question.vue";
-
 export default {
   name: "App",
-  components: {
-    Question,
-  },
   props: {
     questions: {
       type: Array,
       required: true,
     },
   },
-  data() {
-    return {
-      showStart: true,
-      showQuestion: false,
-      showNext: false,
-      showSum: false,
-      //isQuiz: true,
-      userAnswers: [],
-      //startSeen: true,
-      questCount: 0,
-      submitSeen: false,
-      //showSummary: false,
-    };
+  data: () => ({
+    userAnswers: {},
+    questCount: 0,
+    end: false,
+  }),
+  computed: {
+    currentQuestion() {
+      return this.questions[this.questCount];
+    },
+    cannotContinue() {
+      console.log("length", Object.keys(this.userAnswers).length);
+      console.log("cannot continue", !this.userAnswers[this.questCount]);
+      return !this.userAnswers[this.questCount];
+    },
+    isQuizDone() {
+      return Object.keys(this.userAnswers).length === this.questions.length - 1;
+    },
   },
   methods: {
     count: function () {
-      this.showNext = false;
+      //this.showNext = false;
       this.questCount++;
+      console.log("next clicked");
     },
-    stopStartSeen: function () {
-      this.showStart = false;
-      this.showQuestion = true;
-      //this.showNext = true;
+    saveAnswers(answers) {
+      this.userAnswers = {
+        ...this.userAnswers,
+        [this.questCount]: answers,
+      };
+      console.log(this.userAnswers);
     },
-    saveAnswers: function (question, answers) {
-      this.showNext = true;
-      this.userAnswers.push(question, answers);
-    },
-    isLastQuestion: function () {
-      if (this.questCount === this.questions.length - 1) {
-        this.showNext = false;
-        //this.submitSeen = true;
-        return true;
-      } else {
-        return false;
-      }
-    },
-    showingSummary: function () {
-      this.showSum = true;
-      this.showQuestion = false;
-      this.showNext = false;
-      this.submitSeen = false;
-      //this.isLastQuestion = false;
-    },
-    retakeQuiz: function () {
-      this.showStart = true;
-      this.showQuestion = false;
-      this.showNext = false;
-      this.showSum = false;
-      this.userAnswers = [];
+    retakeQuiz() {
+      this.userAnswers = {};
       this.questCount = 0;
-      this.submitSeen = false;
-    },
-  },
-  computed: {
-    currentQuestion: function () {
-      return this.questions[this.questCount];
+      this.end = false;
     },
   },
 };
