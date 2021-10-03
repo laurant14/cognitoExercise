@@ -3,18 +3,6 @@
     <img src="./assets/images/cognitoFormsLogo.png" />
     <div class="sansita"><h1>QUIZ</h1></div>
     <div id="quiz">
-      <div v-if="questCount === 0">
-        <h2>Welcome to the Cognito Forms Quiz!</h2>
-        <h3>Things to remember:</h3>
-        <p>* Once you move on from a question you cannot revisit it</p>
-        <p>
-          * You must answer the current question before moving on to the next
-          one
-        </p>
-        <p class="p2">Click "Start Quiz" to begin.</p>
-        <md-button class="mdbutton" @click="questCount++">Start Quiz</md-button>
-      </div>
-
       <!--show summary div-->
       <div v-if="isQuizDone && end === true">
         <h2>Answer Summary:</h2>
@@ -46,7 +34,7 @@
           v-for="answers in currentQuestion.answers"
           v-bind:key="answers"
           @click="
-            saveAnswers(currentQuestion.text, answers);
+            saveAnswers(answers);
             select();
           "
           v-bind:class="{ highlight: ansSelected(answers) }"
@@ -55,6 +43,7 @@
         </v-btn>
       </div>
     </div>
+
     <md-button
       :disabled="cannotContinue"
       @click="count()"
@@ -87,8 +76,8 @@ export default {
     },
   },
   data: () => ({
-    userAnswers: {},
-    questCount: 0,
+    userAnswers: [],
+    questCount: 1,
     end: false,
     selected: false,
   }),
@@ -96,8 +85,9 @@ export default {
     currentQuestion() {
       return this.questions[this.questCount];
     },
+
     cannotContinue() {
-      return !this.userAnswers[this.questCount];
+      return !this.userAnswers[this.questCount - 1];
     },
     isQuizDone() {
       return Object.keys(this.userAnswers).length === this.questions.length - 1;
@@ -110,22 +100,30 @@ export default {
     specifiedQuestion(index) {
       return this.questions[index];
     },
-    saveAnswers(question, answers) {
-      this.userAnswers = {
-        ...this.userAnswers,
-        [this.questCount]: answers,
-      };
+    saveAnswers(answers) {
+      // this.userAnswers = {
+      //   ...this.userAnswers,
+      //   [this.questCount]: answers,
+      // };
+      //this.userAnswers[this.questCount - 1] = answers;
+      // console.log(
+      //   "this.userAnswers[this.questCount - 1]: ",
+      //   this.userAnswers[this.questCount - 1]
+      // );
+      this.userAnswers = [...this.userAnswers, answers];
+      //console.log(this.userAnswers);
     },
     retakeQuiz() {
-      this.userAnswers = {};
-      this.questCount = 0;
+      this.userAnswers = [];
+      this.questCount = 1;
       this.end = false;
     },
     select() {
       this.selected = true;
     },
     ansSelected(answer) {
-      return this.userAnswers[this.questCount] === answer;
+      console.log("ansSelected", this.userAnswers[this.questCount - 1]);
+      return this.userAnswers[this.questCount - 1] === answer;
     },
   },
 };
