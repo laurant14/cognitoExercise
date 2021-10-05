@@ -29,38 +29,27 @@
 
         <!-- Displaying array of questions with radio button-->
 
-        <!-- <div v-for="answers in currentQuestion.answers" v-bind:key="answers">
-          <input
-            type="radio"
-            v-model="userAnswers[questCount]"
-            :value="answers"
-          />
-          {{ answers }}
-        </div>-->
-        <b-form-group
-          v-slot="{ ariaDescribedby }"
-          v-for="answers in currentQuestion.answers"
-          v-bind:key="answers"
-        >
-          <b-form-radio-group
-            v-model="userAnswers[questCount]"
-            :value="answers"
-            :options="[answers]"
-            :aria-describedby="ariaDescribedby"
-            name="radio-btn-stacked"
-            buttons
-            stacked
-          ></b-form-radio-group>
-        </b-form-group>
+        <div>
+          <b-form-group
+            v-for="answers in currentQuestion.answers"
+            v-bind:key="answers"
+          >
+            <b-form-radio-group
+              v-model="userAnswers[questCount]"
+              :value="answers"
+              :options="[answers]"
+              name="radio-btn-stacked"
+              buttons
+              stacked
+            ></b-form-radio-group>
+          </b-form-group>
+        </div>
       </div>
     </div>
 
     <md-button
       :disabled="cannotContinue"
-      @click="
-        count();
-        print();
-      "
+      @click="count()"
       class="buttonStyle"
       v-if="questCount >= 0 && questCount < questions.length - 1"
     >
@@ -116,18 +105,11 @@ export default {
       //computed function?
       this.end = true;
     },
-    print() {
-      console.log(this.userAnswers);
-    },
     retakeQuiz() {
       //can keep
       this.userAnswers = [];
       this.questCount = 0;
       this.end = false;
-    },
-    select() {
-      //computed ?
-      this.selected = true;
     },
   },
 };
@@ -229,6 +211,7 @@ p {
   font-size: 1pc;
   padding: 2mm;
 }
+
 .p2 {
   font-size: 1pc;
   padding: 3mm;
