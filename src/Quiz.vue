@@ -11,36 +11,31 @@
           v-for="(ans, index) in userAnswers"
           v-bind:key="index"
         >
-          Question {{ index }}:
-          {{ specifiedQuestion(index).text }}
+          Question {{ index + 1 }}:
+          {{ questions[index].text }}
           {{ ans }}
         </p>
       </div>
 
       <!-- Question prompt and actual question-->
-      <div v-if="questCount > 0 && end != true">
+      <div v-if="questCount >= 0 && end != true">
         <h3>
           Question
-          {{ questCount }}
+          {{ questCount + 1 }}
           : Please choose the best answer:
         </h3>
 
         <h4>{{ currentQuestion.text }}</h4>
 
-        <!--display buttons for answers -->
-        <v-btn
-          block
-          class="main1"
-          v-for="answers in currentQuestion.answers"
-          v-bind:key="answers"
-          @click="
-            saveAnswers(answers);
-            select();
-          "
-          v-bind:class="{ highlight: ansSelected(answers) }"
-        >
+        <!-- Displaying array of questions with radio button-->
+        <div v-for="answers in currentQuestion.answers" v-bind:key="answers">
+          <input
+            type="radio"
+            v-model="userAnswers[questCount]"
+            :value="answers"
+          />
           {{ answers }}
-        </v-btn>
+        </div>
       </div>
     </div>
 
@@ -48,7 +43,7 @@
       :disabled="cannotContinue"
       @click="count()"
       class="buttonStyle"
-      v-if="questCount > 0 && questCount < questions.length - 1"
+      v-if="questCount >= 0 && questCount < questions.length - 1"
     >
       Next Question
     </md-button>
@@ -56,8 +51,8 @@
       :disabled="cannotContinue"
       class="buttonStyle"
       v-if="questCount === questions.length - 1 && end != true"
-      @click="end = true"
-    >
+      @click="makeEnd()"
+      ><!-- CANT HAVE THIS MODIFICATION IN LINE ^^-->
       Submit Quiz
     </md-button>
     <md-button @click="retakeQuiz" class="buttonStyle" v-if="end === true">
@@ -77,7 +72,7 @@ export default {
   },
   data: () => ({
     userAnswers: [],
-    questCount: 1,
+    questCount: 0,
     end: false,
     selected: false,
   }),
@@ -85,45 +80,32 @@ export default {
     currentQuestion() {
       return this.questions[this.questCount];
     },
-
     cannotContinue() {
-      return !this.userAnswers[this.questCount - 1];
+      //console.log(this.userAnswers[this.questCount - 1]);
+      return !this.userAnswers[this.questCount];
     },
     isQuizDone() {
-      return Object.keys(this.userAnswers).length === this.questions.length - 1;
+      return this.userAnswers.length === this.questions.length;
     },
   },
   methods: {
     count: function () {
+      //this will end up being computed function?
       this.questCount++;
     },
-    specifiedQuestion(index) {
-      return this.questions[index];
-    },
-    saveAnswers(answers) {
-      // this.userAnswers = {
-      //   ...this.userAnswers,
-      //   [this.questCount]: answers,
-      // };
-      //this.userAnswers[this.questCount - 1] = answers;
-      // console.log(
-      //   "this.userAnswers[this.questCount - 1]: ",
-      //   this.userAnswers[this.questCount - 1]
-      // );
-      this.userAnswers = [...this.userAnswers, answers];
-      //console.log(this.userAnswers);
+    makeEnd() {
+      //computed function?
+      this.end = true;
     },
     retakeQuiz() {
+      //can keep
       this.userAnswers = [];
-      this.questCount = 1;
+      this.questCount = 0;
       this.end = false;
     },
     select() {
+      //computed ?
       this.selected = true;
-    },
-    ansSelected(answer) {
-      console.log("ansSelected", this.userAnswers[this.questCount - 1]);
-      return this.userAnswers[this.questCount - 1] === answer;
     },
   },
 };
