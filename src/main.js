@@ -6,6 +6,15 @@ import "vue-material/dist/vue-material.css";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
+import BootstrapVue from 'bootstrap-vue'
+
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+
+Vue.use(BootstrapVue);
+
 Vue.use(VueMaterial);
 Vue.use(Vuetify);
 

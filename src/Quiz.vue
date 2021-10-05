@@ -28,20 +28,39 @@
         <h4>{{ currentQuestion.text }}</h4>
 
         <!-- Displaying array of questions with radio button-->
-        <div v-for="answers in currentQuestion.answers" v-bind:key="answers">
+
+        <!-- <div v-for="answers in currentQuestion.answers" v-bind:key="answers">
           <input
             type="radio"
             v-model="userAnswers[questCount]"
             :value="answers"
           />
           {{ answers }}
-        </div>
+        </div>-->
+        <b-form-group
+          v-slot="{ ariaDescribedby }"
+          v-for="answers in currentQuestion.answers"
+          v-bind:key="answers"
+        >
+          <b-form-radio-group
+            v-model="userAnswers[questCount]"
+            :value="answers"
+            :options="[answers]"
+            :aria-describedby="ariaDescribedby"
+            name="radio-btn-stacked"
+            buttons
+            stacked
+          ></b-form-radio-group>
+        </b-form-group>
       </div>
     </div>
 
     <md-button
       :disabled="cannotContinue"
-      @click="count()"
+      @click="
+        count();
+        print();
+      "
       class="buttonStyle"
       v-if="questCount >= 0 && questCount < questions.length - 1"
     >
@@ -96,6 +115,9 @@ export default {
     makeEnd() {
       //computed function?
       this.end = true;
+    },
+    print() {
+      console.log(this.userAnswers);
     },
     retakeQuiz() {
       //can keep
