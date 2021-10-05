@@ -4,7 +4,7 @@
     <div class="sansita"><h1>QUIZ</h1></div>
     <div id="quiz">
       <!--show summary div-->
-      <div v-if="isQuizDone && end === true">
+      <div v-if="isQuizDone">
         <h2>Answer Summary:</h2>
         <p
           text-align="center"
@@ -18,10 +18,10 @@
       </div>
 
       <!-- Question prompt and actual question-->
-      <div v-if="questCount >= 0 && end != true">
+      <div v-if="ansQuestNum >= 0 && !isQuizDone">
         <h3>
           Question
-          {{ questCount + 1 }}
+          {{ ansQuestNum + 1 }}
           : Please choose the best answer:
         </h3>
 
@@ -35,7 +35,7 @@
             v-bind:key="answers"
           >
             <b-form-radio-group
-              v-model="userAnswers[questCount]"
+              v-model="userAnswers[ansQuestNum]"
               :value="answers"
               :options="[answers]"
               name="radio-btn-stacked"
@@ -47,23 +47,7 @@
       </div>
     </div>
 
-    <md-button
-      :disabled="cannotContinue"
-      @click="count()"
-      class="buttonStyle"
-      v-if="questCount >= 0 && questCount < questions.length - 1"
-    >
-      Next Question
-    </md-button>
-    <md-button
-      :disabled="cannotContinue"
-      class="buttonStyle"
-      v-if="questCount === questions.length - 1 && end != true"
-      @click="makeEnd()"
-      ><!-- CANT HAVE THIS MODIFICATION IN LINE ^^-->
-      Submit Quiz
-    </md-button>
-    <md-button @click="retakeQuiz" class="buttonStyle" v-if="end === true">
+    <md-button @click="retakeQuiz" class="buttonStyle" v-if="isQuizDone">
       Retake
     </md-button>
   </div>
@@ -80,36 +64,22 @@ export default {
   },
   data: () => ({
     userAnswers: [],
-    questCount: 0,
-    end: false,
-    selected: false,
   }),
   computed: {
     currentQuestion() {
-      return this.questions[this.questCount];
+      return this.questions[this.ansQuestNum];
     },
-    cannotContinue() {
-      //console.log(this.userAnswers[this.questCount - 1]);
-      return !this.userAnswers[this.questCount];
+    ansQuestNum() {
+      console.log(this.userAnswers);
+      return this.userAnswers.length;
     },
     isQuizDone() {
       return this.userAnswers.length === this.questions.length;
     },
   },
   methods: {
-    count: function () {
-      //this will end up being computed function?
-      this.questCount++;
-    },
-    makeEnd() {
-      //computed function?
-      this.end = true;
-    },
     retakeQuiz() {
-      //can keep
       this.userAnswers = [];
-      this.questCount = 0;
-      this.end = false;
     },
   },
 };
