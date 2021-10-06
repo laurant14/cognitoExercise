@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <img src="./assets/images/cognitoFormsLogo.png" />
@@ -91,26 +92,6 @@ button {
   font-weight: 400;
 }
 
-.mdbutton {
-  background-color: rgb(231, 104, 20);
-  padding: 3mm;
-  border-radius: 0px;
-  border-color: white;
-  color: white;
-  font-family: "Raleway", sans-serif;
-  font-size: 1rem;
-  font-weight: 1000;
-  margin-top: 10mm;
-  margin-left: 75mm;
-}
-
-.radioButton .btn-group {
-  text-align: center;
-  background-color: #f8cc9e;
-  border-radius: 4mm;
-  justify-content: center;
-}
-
 .buttonStyle {
   margin-top: 0mm;
   margin-left: 57pc;
@@ -136,9 +117,6 @@ button {
   cursor: pointer;
   position: relative;
 }
-label {
-  position: relative;
-}
 
 input[type="radio"] {
   position: absolute;
@@ -149,16 +127,6 @@ input[type="radio"] {
   left: 20;
   bottom: 0;
   right: 0;
-}
-
-.v-btn {
-  background-color: #fa8100;
-}
-
-.main1 {
-  margin-top: 10px;
-  color: #fa8100;
-  font-weight: bolder;
 }
 
 .summary {
@@ -208,10 +176,6 @@ p {
   padding: 2mm;
 }
 
-.p2 {
-  font-size: 1pc;
-  padding: 3mm;
-}
 .sansita {
   font-family: "Sansita", sans-serif;
 }
