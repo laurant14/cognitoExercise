@@ -27,22 +27,18 @@
 
         <h4>{{ currentQuestion.text }}</h4>
 
-        <!-- Displaying array of questions with radio button-->
-
-        <div>
-          <b-form-group
-            v-for="answers in currentQuestion.answers"
-            v-bind:key="answers"
-          >
-            <b-form-radio-group
-              v-model="userAnswers[ansQuestNum]"
-              :value="answers"
-              :options="[answers]"
-              name="radio-btn-stacked"
-              buttons
-              stacked
-            ></b-form-radio-group>
-          </b-form-group>
+        <!-- Displaying array of answers with radio button-->
+        <div
+          class="answerButton"
+          v-for="answers in currentQuestion.answers"
+          v-bind:key="answers"
+        >
+          <input
+            type="radio"
+            v-model="userAnswers[ansQuestNum]"
+            :value="answers"
+          />
+          <label>{{ answers }}</label>
         </div>
       </div>
     </div>
@@ -108,6 +104,13 @@ button {
   margin-left: 75mm;
 }
 
+.radioButton .btn-group {
+  text-align: center;
+  background-color: #f8cc9e;
+  border-radius: 4mm;
+  justify-content: center;
+}
+
 .buttonStyle {
   margin-top: 0mm;
   margin-left: 57pc;
@@ -121,6 +124,33 @@ button {
   font-weight: 1000;
 }
 
+.answerButton {
+  background-color: #f3b776;
+  font-family: "Raleway", sans-serif;
+  color: white;
+  font-size: 5mm;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 8px;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+label {
+  position: relative;
+}
+
+input[type="radio"] {
+  position: absolute;
+  width: 700px;
+  height: 30px;
+  opacity: 0;
+  top: 10;
+  left: 20;
+  bottom: 0;
+  right: 0;
+}
+
 .v-btn {
   background-color: #fa8100;
 }
@@ -129,10 +159,6 @@ button {
   margin-top: 10px;
   color: #fa8100;
   font-weight: bolder;
-}
-
-.highlight {
-  background-color: #ecba84 !important;
 }
 
 .summary {
